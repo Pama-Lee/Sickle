@@ -3,6 +3,7 @@ package main
 import (
 	"Hooker/database"
 	"Hooker/log"
+	"Hooker/server"
 	"os"
 )
 
@@ -40,6 +41,9 @@ func main() {
 	} else {
 		log.Error("Config is nil")
 	}
+
+	// 启动http服务
+	server.Start(Config)
 
 }
 

@@ -15,6 +15,9 @@ var (
 	ServerConfig *entity.Config
 )
 
+// Writer 日志输出
+var Writer io.Writer
+
 // Timestamp 获取当前时间戳
 func Timestamp() int64 {
 	// 获取当前时间戳
@@ -50,6 +53,8 @@ func InitLogger(config *entity.Config) {
 			log.SetOutput(logFile)
 			mw := io.MultiWriter(os.Stdout, logFile)
 			log.SetOutput(mw)
+			// 设置日志输出
+			Writer = mw
 		}
 	} else {
 		Warn("日志文件未配置, 使用标准输出")
