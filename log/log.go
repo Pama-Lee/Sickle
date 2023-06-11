@@ -1,6 +1,8 @@
-package main
+package log
 
 import (
+	"Hooker/entity"
+	"Hooker/tool"
 	"fmt"
 	"github.com/fatih/color"
 	"io"
@@ -10,7 +12,7 @@ import (
 )
 
 var (
-	ServerConfig *Config
+	ServerConfig *entity.Config
 )
 
 // Timestamp 获取当前时间戳
@@ -19,8 +21,8 @@ func Timestamp() int64 {
 	return time.Now().Unix()
 }
 
-// initLogger 初始化日志
-func initLogger(config *Config) {
+// InitLogger 初始化日志
+func InitLogger(config *entity.Config) {
 	ServerConfig = config
 	// 设置日志前缀
 	log.SetPrefix("[" + config.Project.Name + "] ")
@@ -30,7 +32,7 @@ func initLogger(config *Config) {
 		// 保存在Log目录下
 		// 检查目录是否存在, 不存在则创建
 		Dir := "logs"
-		if !FileExists(Dir) {
+		if !tool.FileExists(Dir) {
 			// 创建目录
 			err := os.Mkdir(Dir, 0777)
 			if err != nil {
