@@ -23,4 +23,8 @@ __                      _                _
 
 func main() {
 	printBanner()
+	Info("Hello, world!")
+	Warn("Hello, world!")
+	Error("Hello, world!")
+	Debug("Hello, world!")
 }

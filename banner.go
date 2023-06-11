@@ -16,10 +16,12 @@ __                      _                _
 )
 
 func printBanner() {
-	// 背景浅蓝色, 字体荧光白
-	c := color.New(color.BgBlue, color.FgHiWhite)
+	// 背景浅蓝色, 字体荧光白, 输出完毕后恢复默认
+	c := color.New(color.BgBlue, color.FgHiWhite).Add(color.Bold)
 	_, err := c.Println(banner)
 	if err != nil {
 		return
 	}
+	c = color.New(color.Reset)
+	_, _ = c.Println("")
 }
