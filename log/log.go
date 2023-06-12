@@ -4,13 +4,14 @@ import (
 	"Sickle/entity"
 	"Sickle/tool"
 	"fmt"
-	"github.com/fatih/color"
-	"github.com/gin-gonic/gin"
 	"io"
 	"log"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/gin-gonic/gin"
 )
 
 var (

@@ -1,10 +1,11 @@
-package database
+package databaseEntity
 
 // Webhooks webhooks实体
 type Webhooks struct {
 	ID        uint   `gorm:"primarykey"`
 	Name      string `gorm:"type:varchar(255);not null;uniqueIndex"`
 	Url       string `gorm:"type:varchar(255);not null;uniqueIndex"`
+	UUID      string `gorm:"type:varchar(255);not null;uniqueIndex"`
 	Enable    bool   `gorm:"type:tinyint(1);not null;default:1"`
 	UpdatedAt int64  `gorm:"autoUpdateTime"`
 	CreatedAt int64  `gorm:"autoCreateTime"`

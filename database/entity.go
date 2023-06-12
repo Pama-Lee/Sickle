@@ -1,20 +1,20 @@
 package database
 
-import "Sickle/entity/database"
+import "Sickle/entity/databaseEntity"
 
 // GetBotEntity 获取bot实体
 func GetBotEntity() []VersionedEntity {
 	return []VersionedEntity{
 		{
-			Entity:  &database.Bot{},
+			Entity:  &databaseEntity.Bot{},
 			Version: "v0.0.1",
 		},
 		{
-			Entity:  &database.BotLog{},
+			Entity:  &databaseEntity.BotLog{},
 			Version: "v0.0.1",
 		},
 		{
-			Entity:  &database.WecomBot{},
+			Entity:  &databaseEntity.WecomBot{},
 			Version: "v0.0.1",
 		},
 	}
@@ -24,15 +24,15 @@ func GetBotEntity() []VersionedEntity {
 func GetForwardEntity() []VersionedEntity {
 	return []VersionedEntity{
 		{
-			Entity:  &database.Forward{},
+			Entity:  &databaseEntity.Forward{},
 			Version: "v0.0.1",
 		},
 		{
-			Entity:  &database.ForwardLog{},
+			Entity:  &databaseEntity.ForwardLog{},
 			Version: "v0.0.1",
 		},
 		{
-			Entity:  &database.ForwardLogDetail{},
+			Entity:  &databaseEntity.ForwardLogDetail{},
 			Version: "v0.0.1",
 		},
 	}
@@ -42,15 +42,15 @@ func GetForwardEntity() []VersionedEntity {
 func GetWebhookEntity() []VersionedEntity {
 	return []VersionedEntity{
 		{
-			Entity:  &database.Webhooks{},
+			Entity:  &databaseEntity.Webhooks{},
 			Version: "v0.0.1",
 		},
 		{
-			Entity:  &database.WebhooksLog{},
+			Entity:  &databaseEntity.WebhooksLog{},
 			Version: "v0.0.1",
 		},
 		{
-			Entity:  &database.WebhooksLogDetail{},
+			Entity:  &databaseEntity.WebhooksLogDetail{},
 			Version: "v0.0.1",
 		},
 	}

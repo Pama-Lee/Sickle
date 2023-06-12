@@ -1,4 +1,4 @@
-package database
+package databaseEntity
 
 // Forward 转发Webhooks的实体
 type Forward struct {

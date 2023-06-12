@@ -1,4 +1,4 @@
-package database
+package databaseEntity
 
 // Bot bot实体
 type Bot struct {

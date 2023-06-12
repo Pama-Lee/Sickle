@@ -3,8 +3,9 @@ package database
 import (
 	"Sickle/log"
 	"fmt"
-	"gorm.io/gorm"
 	"reflect"
+
+	"gorm.io/gorm"
 )
 
 type VersionedEntityRoot struct {

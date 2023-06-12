@@ -8,7 +8,7 @@ import (
 )
 
 func Main() {
-	pkgPath := "Sickle/entity/database"
+	pkgPath := "Sickle/entity/databaseEntity"
 	pkg, err := parser.ParseDir(token.NewFileSet(), pkgPath, nil, parser.ParseComments)
 	if err != nil {
 		fmt.Println(err)

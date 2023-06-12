@@ -25,6 +25,7 @@ func init() {
 	// 初始化日志
 	log2.InitLogger(config)
 	Config = config
+	log2.Info("Config init success")
 }
 
 // LoadConfig 加载配置文件
