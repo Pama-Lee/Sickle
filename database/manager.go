@@ -1,8 +1,8 @@
 package database
 
 import (
-	"Hooker/entity"
-	"Hooker/log"
+	"Sickle/entity"
+	"Sickle/log"
 	"errors"
 	"gorm.io/gorm"
 )

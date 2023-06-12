@@ -14,4 +14,5 @@ func ping(c *gin.Context) {
 		"code": 0,
 		"msg":  "pong",
 	})
+
 }

@@ -1,4 +1,4 @@
-module Hooker
+module Sickle
 
 go 1.19
 

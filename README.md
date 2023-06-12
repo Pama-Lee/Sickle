@@ -1,12 +1,13 @@
 ```
-__                      _                _
-\ \    /\  /\___   ___ | | _____ _ __   | |
- \ \  / /_/ / _ \ / _ \| |/ / _ \ '__| / __)
- / / / __  / (_) | (_) |   <  __/ |    \__ \
-/_/  \/ /_/ \___/ \___/|_|\_\___|_|    (   /
-                                        |_|
+__       _____ _      __   __         __
+\ \     / ___/(_)____/ /__/ /__     _/ /
+ \ \    \__ \/ / ___/ //_/ / _ \   / __/
+ / /   ___/ / / /__/ ,< / /  __/  (_  )
+/_/   /____/_/\___/_/|_/_/\___/  /  _/
+                                 /_/
 ```
-![visitors](https://badges.strrl.dev/visits/Pama-Lee/Hooker)
+
+![visitors](https://badges.strrl.dev/visits/Pama-Lee/Sickle)
 
 本项目的作用是统合各平台的webhooks，例如GitHub, Slack, Discord等，并且转发到不同平台的集成平台，例如IFTTT, Zapier等。
 
@@ -22,7 +23,7 @@ __                      _                _
 你可以使用以下命令克隆这个仓库到你的本地：
 
 ```bash
-git clone https://github.com/Pama-Lee/Hooker.git
+git clone https://github.com/Pama-Lee/Sickle.git
 ```
 
 ## 安装依赖

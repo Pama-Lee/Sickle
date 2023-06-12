@@ -1,8 +1,8 @@
 package log
 
 import (
-	"Hooker/entity"
-	"Hooker/tool"
+	"Sickle/entity"
+	"Sickle/tool"
 	"fmt"
 	"github.com/fatih/color"
 	"io"

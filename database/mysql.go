@@ -1,7 +1,7 @@
 package database
 
 import (
-	"Hooker/entity"
+	"Sickle/entity"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"strconv"

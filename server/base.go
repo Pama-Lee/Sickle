@@ -1,8 +1,8 @@
 package server
 
 import (
-	"Hooker/entity"
-	"Hooker/log"
+	"Sickle/entity"
+	"Sickle/log"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

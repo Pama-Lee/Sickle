@@ -8,7 +8,7 @@ import (
 // InitSqlite 初始化sqlite数据库
 func InitSqlite() error {
 	// 使用gorm连接数据库
-	db, err := gorm.Open(sqlite.Open("hooker.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("sickle.db"), &gorm.Config{})
 	if err != nil {
 		return err
 	}
