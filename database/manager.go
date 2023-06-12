@@ -36,6 +36,9 @@ func InitDatabase(config *entity.Config) error {
 
 	log.Info("Use database: " + config.Database.Type + " successfully")
 
+	// 映射数据库实体
+	SetUp()
+
 	return nil
 }
 
