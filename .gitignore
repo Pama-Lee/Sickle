@@ -19,4 +19,14 @@
 
 # Go workspace file
 go.work
-./.idea
+/.idea
+
+# 配置文件
+config.json
+
+# 日志文件
+log/*.log
+*.log
+
+# 数据库文件
+*.db
