@@ -15,8 +15,8 @@ type Config struct {
 		// 数据库密码
 		Password string `json:"password"`
 		// 数据库名称
-		Database string `json:"database"`
-	} `json:"database"`
+		Database string `json:"databaseEntity"`
+	} `json:"databaseEntity"`
 	// 服务器配置
 	Server struct {
 		// 服务器地址

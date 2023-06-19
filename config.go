@@ -1,9 +1,9 @@
 package main
 
 import (
-	"Hooker/entity"
-	log2 "Hooker/log"
-	"Hooker/tool"
+	"Sickle/entity"
+	log2 "Sickle/log"
+	"Sickle/tool"
 	"encoding/json"
 	"log"
 	"os"
@@ -25,6 +25,7 @@ func init() {
 	// 初始化日志
 	log2.InitLogger(config)
 	Config = config
+	log2.Info("Config init success")
 }
 
 // LoadConfig 加载配置文件
@@ -70,14 +71,14 @@ func NewConfig() {
 	config := &entity.Config{}
 
 	// 默认配置
-	config.Log.File = "hooker"
+	config.Log.File = "sickle"
 	config.Log.Level = "debug"
 	config.Server.Host = "127.0.0.1"
 	config.Server.Port = 8080
 	config.Database.Type = "mysql"
 	config.Database.Host = "127.0.0.1"
 	config.Database.Port = 3306
-	config.Project.Name = "Hooker"
+	config.Project.Name = "Sickle"
 	config.Project.Version = "1.0.0"
 	config.Project.Author = "Pama Lee"
 	config.Project.Description = "A centralized system for managing multi-platform Hooks."

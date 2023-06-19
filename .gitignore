@@ -30,3 +30,5 @@ log/*.log
 
 # 数据库文件
 *.db
+
+.DS_Store

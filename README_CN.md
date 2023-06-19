@@ -11,34 +11,34 @@ __       _____ _      __   __         __
 
 ![chart](./image/chart.svg)
 
+本项目的作用是统合各平台的webhooks，例如GitHub, Slack等，并且转发到不同平台的集成平台，例如IFTTT, Discord, Wecom Bot等
 
-The purpose of this project is to integrate webhooks from various platforms, such as GitHub, Slack, etc., and forward them to different integrated platforms, such as IFTTT, Discord, Wecom Bot, etc.
+## 功能
 
-## Features
+- 支持多种webhooks来源和目标平台
+- 支持自定义webhooks的格式和内容
+- 支持过滤和转换webhooks的数据
+- 支持日志和错误处理
 
-- Supports multiple webhook sources and target platforms
-- Supports customization of webhook formats and content
-- Supports filtering and transforming webhook data
-- Supports logging and error handling
+## 安装
 
-## Installation
-
-You can clone this repository to your local machine using the following command:
+你可以使用以下命令克隆这个仓库到你的本地：
 
 ```bash
 git clone https://github.com/Pama-Lee/Sickle.git
+```
 
-## Install Dependencies
+## 安装依赖
 
 ```bash
 go mod tidy
 ```
 
-## Configuration
+## 配置
 
-1. Configuration using a config file
+1. 使用config文件配置
 
-You can configure your webhook sources and target platforms in ./config/{project}.json, for example:
+你可以在`./config/{project}.json`中配置你的webhooks来源和目标平台，例如：
 
 ```json
 // ./config/webhooks.json
@@ -106,27 +106,22 @@ You can configure your webhook sources and target platforms in ./config/{project
 
 ```
 
-2. Configuration through a web page
+2. 在web页面配置
 
-## Running
+## 运行
 
 ```bash
 go run main.go
 ```
 
-## Contribution
+## 贡献
 
-### Contribution Template
+### 贡献模板
 ```markdown
-# Contributor
+# 贡献者
 name: Pama-Lee
 
-# Contribution Details
-- [x] Feature 1
-- [ ] Feature 2
+# 贡献内容
+- [x] 功能1
+- [ ] 功能2
 ```
-
-
-
-
-

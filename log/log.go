@@ -1,14 +1,17 @@
 package log
 
 import (
-	"Hooker/entity"
-	"Hooker/tool"
+	"Sickle/entity"
+	"Sickle/tool"
 	"fmt"
-	"github.com/fatih/color"
 	"io"
 	"log"
 	"os"
+	"strings"
 	"time"
+
+	"github.com/fatih/color"
+	"github.com/gin-gonic/gin"
 )
 
 var (
@@ -28,7 +31,8 @@ func Timestamp() int64 {
 func InitLogger(config *entity.Config) {
 	ServerConfig = config
 	// 设置日志前缀
-	log.SetPrefix("[" + config.Project.Name + "] ")
+	prefixColor := color.New(color.BgHiBlue).Add(color.Bold).Add(color.FgHiWhite).SprintFunc()
+	log.SetPrefix(prefixColor("["+config.Project.Name+"]") + " ")
 	// 设置日志输出位置
 	if config.Log.File != "" {
 		// 设置日志文件, 文件名: `config.Log.File.时间戳.log` 格式
@@ -61,13 +65,51 @@ func InitLogger(config *entity.Config) {
 	}
 }
 
+// GinLogger 自定义日志记录中间件
+func GinLogger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		startTime := time.Now()
+		// 处理请求
+		c.Next()
+		// 在请求完成后记录日志
+		if c.Writer.Status() == 404 {
+			codeString := color.New(color.BgHiYellow).Add(color.FgHiWhite).SprintFunc()
+			Warn(c.Request.Method, c.Request.URL, codeString(c.Writer.Status()), c.Writer.Size(), c.ClientIP())
+		}
+		if c.Writer.Status() == 500 {
+			codeString := color.New(color.BgHiRed).Add(color.FgHiWhite).SprintFunc()
+			Error(c.Request.Method, c.Request.URL, codeString(c.Writer.Status()), c.Writer.Size(), c.ClientIP())
+		}
+		if c.Writer.Status() == 200 {
+			// 计算耗时时间
+			stopTime := time.Now()
+			esTime := stopTime.Sub(startTime)
+			elapsedString := color.New(color.FgHiYellow).SprintFunc()
+			codeString := color.New(color.BgHiGreen).Add(color.FgHiWhite).SprintFunc()
+			Info(codeString(c.Writer.Status()), c.Request.Method, c.Request.URL, elapsedString(esTime), c.ClientIP())
+		}
+	}
+}
+
+// 处理args参数
+func handleArgs(args ...interface{}) string {
+	// 在不同param中间加空格
+	var result []string
+	for _, arg := range args {
+		result = append(result, fmt.Sprintf("%v", arg))
+	}
+
+	param := strings.Join(result, " ")
+	return param
+}
+
 // Debug 打印调试日志
 func Debug(args ...interface{}) {
 	if ServerConfig.Log.Level != "debug" {
 		return
 	}
 	debugString := color.New(color.FgHiBlue).SprintFunc()
-	c := fmt.Sprintf("%s %s", debugString("[DEBUG]"), fmt.Sprint(args...))
+	c := fmt.Sprintf("%s %s", debugString("[DEBUG]"), handleArgs(args...))
 	log.Println(c)
 }
 
@@ -77,7 +119,8 @@ func Info(args ...interface{}) {
 		return
 	}
 	infoString := color.New(color.FgHiGreen).SprintFunc()
-	c := fmt.Sprintf("%s %s", infoString("[INFO]"), fmt.Sprint(args...))
+
+	c := fmt.Sprintf("%s %s", infoString("[INFO]"), handleArgs(args...))
 	log.Println(c)
 }
 
@@ -87,13 +130,13 @@ func Warn(args ...interface{}) {
 		return
 	}
 	warnString := color.New(color.FgHiYellow).SprintFunc()
-	c := fmt.Sprintf("%s %s", warnString("[WARN]"), fmt.Sprint(args...))
+	c := fmt.Sprintf("%s %s", warnString("[WARN]"), handleArgs(args...))
 	log.Println(c)
 }
 
 // Error 打印错误日志
 func Error(args ...interface{}) {
 	errorString := color.New(color.FgHiRed).SprintFunc()
-	c := fmt.Sprintf("%s %s", errorString("[ERROR]"), fmt.Sprint(args...))
+	c := fmt.Sprintf("%s %s", errorString("[ERROR]"), handleArgs(args...))
 	log.Println(c)
 }

@@ -9,5 +9,9 @@ func registerRouter(r *gin.Engine) {
 	{
 		serverRoute(server)
 	}
+	webhooks := r.Group("/webhooks")
+	{
+		WebhooksRoute(webhooks)
+	}
 
 }

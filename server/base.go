@@ -1,20 +1,20 @@
 package server
 
 import (
-	"Hooker/entity"
-	"Hooker/log"
-	"github.com/gin-gonic/gin"
+	"Sickle/entity"
+	"Sickle/log"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // Start 启动http服务
 func Start(config *entity.Config) {
 	// 启动http服务
-	//gin.SetMode(gin.ReleaseMode)
-	r := gin.Default()
-
+	gin.SetMode(gin.ReleaseMode)
 	gin.DefaultWriter = log.Writer
-
+	r := gin.New()
+	r.Use(log.GinLogger())
 	// 注册路由
 	registerRouter(r)
 

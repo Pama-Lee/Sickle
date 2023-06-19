@@ -1,10 +1,11 @@
 package database
 
 import (
-	"Hooker/entity"
+	"Sickle/entity"
+	"strconv"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"strconv"
 )
 
 // InitMysql 初始化mysql数据库
