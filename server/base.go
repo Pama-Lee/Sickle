@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	ginC *gin.Engine
+)
+
 // Start 启动http服务
 func Start(config *entity.Config) {
 	// 启动http服务
@@ -21,6 +25,9 @@ func Start(config *entity.Config) {
 	portStr := strconv.Itoa(config.Server.Port)
 
 	log.Info("Server is running on port " + portStr)
+
+	ginC = r
+
 	// 启动服务
 	err := r.Run(":" + portStr)
 	if err != nil {
