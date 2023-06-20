@@ -26,6 +26,47 @@ func init() {
 	log2.InitLogger(config)
 	Config = config
 	log2.Info("Config init success")
+
+	InitConfigDIR()
+}
+
+// InitConfigDIR 初始化配置文件目录
+func InitConfigDIR() {
+	// 初始化配置文件目录
+	// 检查配置文件目录是否存在, 不存在则创建
+	if !tool.FileExists("config") {
+		// 创建配置文件目录
+		err := os.Mkdir("config", os.ModePerm)
+		if err != nil {
+			log2.Error(err)
+		}
+	}
+
+	// 检查这个文件夹中有多少个配置文件
+	// 如果没有配置文件, 则创建默认配置文件
+	if !tool.FileExists("config/webhooks.json") {
+		// 创建配置文件
+		f, err := os.Create("config/webhooks.json")
+		if err != nil {
+			log2.Error(err)
+		}
+		defer func(f *os.File) {
+			err := f.Close()
+			if err != nil {
+				log2.Error(err)
+			}
+		}(f)
+
+		// 默认配置
+	}
+
+	// 检查这个文件夹中有多少个配置文件
+
+}
+
+// FindConfig 寻找 config 文件夹中的配置文件
+func FindConfig() {
+
 }
 
 // LoadConfig 加载配置文件

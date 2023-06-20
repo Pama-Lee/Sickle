@@ -4,7 +4,10 @@ import (
 	"Sickle/database"
 	"Sickle/log"
 	"Sickle/server"
+	"Sickle/store"
+	"fmt"
 	"os"
+	"strconv"
 )
 
 /**
@@ -40,9 +43,42 @@ func main() {
 		log.Error("Config is nil")
 	}
 
-	// 启动http服务
-	server.Start(Config)
+	Test()
 
+	// log.Info(UUID2Config)
+
+	log.Info("Successfully loaded " + strconv.Itoa(len(store.GlobalConfig)) + " webhook(s)")
+
+	// 开启单独的线程处理http
+	go server.Start(Config)
+
+	// 开启单独的线程开启控制台
+	console()
+
+}
+
+// console 控制台
+func console() {
+	log.Info("Sickle is running, type 'stop' to stop it")
+	for {
+		var input string
+		// 获取输入
+		_, err := fmt.Scanln(&input)
+		if err != nil {
+			log.Error(err)
+		}
+
+		switch input {
+		case "stop":
+			Stop()
+		case "exit":
+			Exit(0)
+		case "reload":
+			Reload()
+		default:
+			log.Warn("Unknown command")
+		}
+	}
 }
 
 // Stop 停止程序
@@ -54,6 +90,24 @@ func Stop() {
 	}
 	// 退出程序
 	Exit(0)
+}
+
+// Reload 重载程序
+func Reload() {
+	log.Info("Sickle is reloading...")
+	// 关闭数据库
+	err := database.CloseDatabase()
+	if err != nil {
+		log.Error(err)
+	}
+	// 重连数据库
+	err = database.InitDatabase(Config)
+	if err != nil {
+		log.Error(err)
+	}
+	Test()
+	log.Info("Sickle is reloaded")
+
 }
 
 // Exit 退出程序

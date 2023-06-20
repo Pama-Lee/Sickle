@@ -22,7 +22,11 @@ go.work
 /.idea
 
 # 配置文件
+./config
 config.json
+config
+
+sickle
 
 # 日志文件
 log/*.log

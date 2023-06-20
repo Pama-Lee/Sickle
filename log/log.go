@@ -2,7 +2,6 @@ package log
 
 import (
 	"Sickle/entity"
-	"Sickle/tool"
 	"fmt"
 	"io"
 	"log"
@@ -39,7 +38,7 @@ func InitLogger(config *entity.Config) {
 		// 保存在Log目录下
 		// 检查目录是否存在, 不存在则创建
 		Dir := "logs"
-		if !tool.FileExists(Dir) {
+		if !FileExists(Dir) {
 			// 创建目录
 			err := os.Mkdir(Dir, 0777)
 			if err != nil {
@@ -139,4 +138,16 @@ func Error(args ...interface{}) {
 	errorString := color.New(color.FgHiRed).SprintFunc()
 	c := fmt.Sprintf("%s %s", errorString("[ERROR]"), handleArgs(args...))
 	log.Println(c)
+}
+
+// FileExists 检查文件是否存在
+func FileExists(path string) bool {
+	// 打开文件
+	_, err := os.Open(path)
+	// 文件不存在
+	if err != nil && os.IsNotExist(err) {
+		return false
+	}
+	// 文件存在
+	return true
 }
