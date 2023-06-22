@@ -38,20 +38,13 @@ func main() {
 		if err != nil {
 			log.Error(err)
 		}
-
 	} else {
 		log.Error("Config is nil")
 	}
-
-	Test()
-
-	// log.Info(UUID2Config)
-
+	hookConfig()
 	log.Info("Successfully loaded " + strconv.Itoa(len(store.GlobalConfig)) + " webhook(s)")
-
 	// 开启单独的线程处理http
 	go server.Start(Config)
-
 	// 开启单独的线程开启控制台
 	console()
 
@@ -105,7 +98,7 @@ func Reload() {
 	if err != nil {
 		log.Error(err)
 	}
-	Test()
+	hookConfig()
 	log.Info("Sickle is reloaded")
 
 }

@@ -6,6 +6,7 @@ import (
 	"Sickle/tool"
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 
@@ -35,8 +36,9 @@ func post(c *gin.Context) {
 	}
 
 	// json
-	json := make(map[string]interface{})
-	err := c.BindJSON(&json)
+	j := make(map[string]interface{})
+	err := c.BindJSON(&j)
+
 	if err != nil {
 		log.Error(err)
 		c.JSON(500, gin.H{
@@ -45,18 +47,21 @@ func post(c *gin.Context) {
 		return
 	}
 
+	// 将headers写入j
+	headers := c.Request.Header
+	for k, v := range headers {
+		j["sickle.headers."+k] = v[0]
+	}
+
 	// 生成json
-	jsonEn := genJson(json)
+	jsonEn := genJson(j)
 
 	// 获取 config
 	configEn := store.UUID2Config[uuid]
 	// 匹配 event
 	events := configEn.Source.Config.Events
 	for _, event := range events {
-		// 匹配 event
 		if event.Name == jsonEn[event.Key] {
-			// 匹配到
-			// 获取要转发到的url
 			for _, destination := range event.Destinations {
 				// 获取destination
 				for _, destinationEn := range configEn.Destinations {
@@ -66,29 +71,30 @@ func post(c *gin.Context) {
 						url := destinationEn.Config.WebhookURL
 						// 获取data
 						data := destinationEn.Config.Data
-						BindData(data, jsonEn)
-						log.Info("data: ", data)
+						newData := BindData(data, jsonEn)
+						log.Debug("data: ", newData)
 						// 转发
-						sendForward(url, data)
+						sendForward(url, newData)
+
 					}
 				}
 			}
-
 			break
 		}
 	}
 
+	// 获取name
+	name := configEn.Name
+
 	// 输出到/config/uuid_json.json
-	tool.SaveConfigFile("./config/"+uuid+"_json.json", jsonEn)
+	errS := tool.SaveConfigFile("./request/"+name+"_"+uuid+".json", jsonEn)
+	if errS != nil {
+		return
+	}
 
 	c.JSON(200, gin.H{
 		"message": "ok",
 	})
-
-}
-
-// get 接收webhooks请求
-func get(c *gin.Context) {
 
 }
 
@@ -99,15 +105,11 @@ func genJson(json map[string]interface{}) map[string]interface{} {
 
 	// 遍历json
 	for k, v := range json {
-		// 如果是map[string]interface{}
 		if vMap, ok := v.(map[string]interface{}); ok {
-			// 递归
 			for k2, v2 := range genJson(vMap) {
-				// 拼接
 				result[k+"."+k2] = v2
 			}
 		} else {
-			// 不是map[string]interface{}
 			result[k] = v
 		}
 	}
@@ -147,19 +149,23 @@ func sendForward(url string, data map[string]interface{}) {
 		log.Error(err)
 		return
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			log.Error(err)
+		}
+	}(resp.Body)
 
 	// 处理响应
-	log.Info("resp: ", resp)
+	log.Debug("resp: ", resp)
 
 }
 
-// NewReadCloser
+// ReadCloser NewReadCloser
 type ReadCloser struct {
 	*string
 }
 
-// NewReadCloser
 func NewReadCloser(s string) *ReadCloser {
 	return &ReadCloser{&s}
 }
@@ -175,23 +181,36 @@ func NewReadCloser(s string) *ReadCloser {
                 }
 */
 // 将其中的 ${} 替换为 data 中的值
-func BindData(data map[string]interface{}, json map[string]interface{}) {
+func BindData(data map[string]interface{}, json map[string]interface{}) map[string]interface{} {
+	newData := make(map[string]interface{})
 
-	// 遍历data
 	for k, v := range data {
-		// 如果是map[string]interface{}
+		newData[k] = v
+	}
+
+	// 遍历 data
+	for k, v := range data {
+		// 如果是 map[string]interface{}
 		if vMap, ok := v.(map[string]interface{}); ok {
-			// 递归
-			BindData(vMap, json)
+			// 递归调用，并将结果存储在新变量中
+			newVMap := BindData(vMap, json)
+			newData[k] = newVMap
 		} else {
-			// 获取${}中的值
-			keyValue, err := tool.GetKey(v.(string))
-			if err != nil {
-				log.Error(err)
-				continue
+			// 获取 ${} 中的值
+			if str, ok := v.(string); ok {
+				keyValue, err := tool.GetKey(str)
+				if err != nil {
+					log.Error(err)
+					continue
+				}
+
+				if keyValue != "" {
+					// 替换
+					newData[k] = json[keyValue]
+				}
 			}
-			// 替换
-			data[k] = json[keyValue]
 		}
 	}
+
+	return newData
 }

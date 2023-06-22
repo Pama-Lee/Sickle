@@ -3,7 +3,6 @@ package tool
 import (
 	"Sickle/log"
 	"encoding/json"
-	"errors"
 	"os"
 
 	"github.com/google/uuid"
@@ -65,7 +64,7 @@ func GetKey(str string) (string, error) {
 	log.Debug(str)
 	// 判断是否是${}格式
 	if str[0] != '$' || str[1] != '{' || str[len(str)-1] != '}' {
-		return "", errors.New("not ${} format")
+		return "", nil
 	}
 	// 获取key
 	return str[2 : len(str)-1], nil
