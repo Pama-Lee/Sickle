@@ -34,6 +34,14 @@ type Destination struct {
 }
 
 type DestinationConfig struct {
-	WebhookURL string                 `json:"webhook_url"`
-	Data       map[string]interface{} `json:"data"`
+	WebhookURL string     `json:"webhook_url"`
+	Method     string     `json:"method"`
+	Data       []DataUnit `json:"data"`
+	// From 1.0.0-alpha
+	Headers map[string]string `json:"headers"`
+}
+
+type DataUnit struct {
+	Event string                 `json:"event"`
+	Data  map[string]interface{} `json:"data"`
 }

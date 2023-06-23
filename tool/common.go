@@ -4,6 +4,7 @@ import (
 	"Sickle/log"
 	"encoding/json"
 	"os"
+	"regexp"
 
 	"github.com/google/uuid"
 )
@@ -59,15 +60,17 @@ func SaveConfigFile(path string, config interface{}) error {
 	return nil
 }
 
-// GetKey 获取${}中的key
-func GetKey(str string) (string, error) {
-	log.Debug(str)
-	// 判断是否是${}格式
-	if str[0] != '$' || str[1] != '{' || str[len(str)-1] != '}' {
-		return "", nil
+func GetKey(input string) []string {
+	variables := make([]string, 0)
+
+	re := regexp.MustCompile(`\$\{([^}]+)\}`)
+	matches := re.FindAllStringSubmatch(input, -1)
+
+	for _, match := range matches {
+		variables = append(variables, match[1])
 	}
-	// 获取key
-	return str[2 : len(str)-1], nil
+
+	return variables
 }
 
 // IsString 判断是否是字符串

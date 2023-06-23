@@ -1,16 +1,13 @@
 package server
 
 import (
+	"Sickle/channel"
 	"Sickle/log"
 	"Sickle/store"
 	"Sickle/tool"
-	"bytes"
-	"encoding/json"
-	"io"
-	"io/ioutil"
-	"net/http"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 // WebhooksRoute 注册路由
@@ -70,12 +67,40 @@ func post(c *gin.Context) {
 						// 获取url
 						url := destinationEn.Config.WebhookURL
 						// 获取data
-						data := destinationEn.Config.Data
+						dataList := destinationEn.Config.Data
+
+						// 匹配event
+						var data map[string]interface{}
+						for _, dataEn := range dataList {
+							if dataEn.Event == jsonEn[event.Key] {
+								data = dataEn.Data
+								break
+							}
+						}
+						// 如果data为空
+						if data == nil {
+							log.Warn(config.Name, " ", destinationEn.Name, event.Name, " data is nil")
+							continue
+						}
 						newData := BindData(data, jsonEn)
 						log.Debug("data: ", newData)
-						// 转发
-						sendForward(url, newData)
+						// 获取是否有headers
+						headers := destinationEn.Config.Headers
 
+						// 检查Method是否存在
+						if destinationEn.Config.Method == "" {
+							destinationEn.Config.Method = "POST"
+						}
+
+						// 构建DestinationQueueConfig
+						destinationQueueConfig := channel.DestinationQueueConfig{
+							WebhookURL: url,
+							Method:     destinationEn.Config.Method,
+							Data:       newData,
+							Headers:    headers,
+						}
+						// 添加到队列
+						channel.AddDestinationQueue(destinationQueueConfig)
 					}
 				}
 			}
@@ -117,50 +142,6 @@ func genJson(json map[string]interface{}) map[string]interface{} {
 	return result
 }
 
-// sendForward 发送转发请求
-func sendForward(url string, data map[string]interface{}) {
-	// 发送 http 请求
-	// 创建请求
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(nil))
-	if err != nil {
-		log.Error(err)
-		return
-	}
-
-	// 设置header
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("From", "Sickle")
-
-	// 设置body
-	// 将 data 转为json
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-	// 设置负载
-	req.Body = ioutil.NopCloser(bytes.NewReader(jsonData))
-	req.ContentLength = int64(len(jsonData))
-
-	// 发送请求
-	client := http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Error(err)
-		return
-	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Error(err)
-		}
-	}(resp.Body)
-
-	// 处理响应
-	log.Debug("resp: ", resp)
-
-}
-
 // ReadCloser NewReadCloser
 type ReadCloser struct {
 	*string
@@ -188,25 +169,20 @@ func BindData(data map[string]interface{}, json map[string]interface{}) map[stri
 		newData[k] = v
 	}
 
-	// 遍历 data
 	for k, v := range data {
-		// 如果是 map[string]interface{}
 		if vMap, ok := v.(map[string]interface{}); ok {
-			// 递归调用，并将结果存储在新变量中
 			newVMap := BindData(vMap, json)
 			newData[k] = newVMap
 		} else {
-			// 获取 ${} 中的值
 			if str, ok := v.(string); ok {
-				keyValue, err := tool.GetKey(str)
-				if err != nil {
-					log.Error(err)
-					continue
-				}
-
-				if keyValue != "" {
-					// 替换
-					newData[k] = json[keyValue]
+				keyValue := tool.GetKey(str)
+				if keyValue != nil {
+					for _, key := range keyValue {
+						if replacement, exists := json[key]; exists {
+							str = strings.ReplaceAll(str, "${"+key+"}", fmt.Sprintf("%v", replacement))
+						}
+					}
+					newData[k] = str
 				}
 			}
 		}

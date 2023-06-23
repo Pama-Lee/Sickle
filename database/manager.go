@@ -54,6 +54,7 @@ func checkDatabaseConfig(config *entity.Config) error {
 	switch DatabaseConfig.Type {
 	case "mysql":
 		if DatabaseConfig.Type == "mysql" {
+			log.Info("You selected mysql driver, you need to configure the database information in the config.json file")
 			// 检查数据库地址是否为空
 			if DatabaseConfig.Host == "" {
 				return errors.New("the database host is empty")
@@ -95,6 +96,10 @@ func GetDatabaseSession() *gorm.DB {
 
 // CloseDatabase 关闭数据库
 func CloseDatabase() error {
+	// 检测数据库是否已经初始化
+	if Database == nil {
+		return errors.New("the database is not initialized")
+	}
 	// 关闭数据库
 	db, err := Database.DB()
 	if err != nil {

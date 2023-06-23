@@ -106,13 +106,19 @@ func getConfigFiles(folderPath string) ([]string, error) {
 					Type: "dingtalk",
 					Config: entity.DestinationConfig{
 						WebhookURL: "https://oapi.dingtalk.com/robot/send?access_token=xxx",
-						Data: map[string]interface{}{
-							"msgtype": "markdown",
-							"markdown": map[string]interface{}{
-								"title": "Sickle",
-								"text": "### Sickle\n" +
-									"**{{sickle.headers.X-GitHub-Event}}**\n" +
-									"**{{action}}**\n",
+						Method:     "POST",
+						Data: []entity.DataUnit{
+							{
+								Event: "star",
+								Data: map[string]interface{}{
+									"msgtype": "markdown",
+									"markdown": map[string]interface{}{
+										"title": "Sickle",
+										"text": "### Sickle\n" +
+											"**{{sickle.headers.X-GitHub-Event}}**\n" +
+											"**{{action}}**\n",
+									},
+								},
 							},
 						},
 					},
@@ -122,12 +128,23 @@ func getConfigFiles(folderPath string) ([]string, error) {
 					Type: "WeCom",
 					Config: entity.DestinationConfig{
 						WebhookURL: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxx",
-						Data: map[string]interface{}{
-							"msgtype": "text",
-							"text": map[string]interface{}{
-								"content": "Sickle\n" +
-									"{{sickle.headers.X-GitHub-Event}}\n" +
-									"{{action}}\n",
+						Method:     "POST",
+						Headers: map[string]string{
+							"User-Agent":    "Sickle",
+							"Authorization": "Bearer xxx",
+						},
+						Data: []entity.DataUnit{
+							{
+								Event: "star",
+								Data: map[string]interface{}{
+									"msgtype": "markdown",
+									"markdown": map[string]interface{}{
+										"title": "Sickle",
+										"text": "### Sickle\n" +
+											"**{{sickle.headers.X-GitHub-Event}}**\n" +
+											"**{{action}}**\n",
+									},
+								},
 							},
 						},
 					},
