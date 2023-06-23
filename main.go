@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Sickle/channel"
 	"Sickle/database"
 	"Sickle/log"
 	"Sickle/server"
@@ -38,20 +39,17 @@ func main() {
 		if err != nil {
 			log.Error(err)
 		}
-
 	} else {
 		log.Error("Config is nil")
 	}
-
-	Test()
-
-	// log.Info(UUID2Config)
-
+	hookConfig()
 	log.Info("Successfully loaded " + strconv.Itoa(len(store.GlobalConfig)) + " webhook(s)")
+
+	// 开启单独的线程处理channel
+	channel.Start()
 
 	// 开启单独的线程处理http
 	go server.Start(Config)
-
 	// 开启单独的线程开启控制台
 	console()
 
@@ -95,17 +93,28 @@ func Stop() {
 // Reload 重载程序
 func Reload() {
 	log.Info("Sickle is reloading...")
-	// 关闭数据库
-	err := database.CloseDatabase()
-	if err != nil {
-		log.Error(err)
+
+	// 如果数据库已经关闭，直接重连
+	if database.Database == nil {
+		// 重连数据库
+		err := database.InitDatabase(Config)
+		if err != nil {
+			log.Error(err)
+		}
+	} else {
+		// 关闭数据库
+		err := database.CloseDatabase()
+		if err != nil {
+			log.Error(err)
+		}
+		// 重连数据库
+		err = database.InitDatabase(Config)
+		if err != nil {
+			log.Error(err)
+		}
 	}
-	// 重连数据库
-	err = database.InitDatabase(Config)
-	if err != nil {
-		log.Error(err)
-	}
-	Test()
+
+	hookConfig()
 	log.Info("Sickle is reloaded")
 
 }

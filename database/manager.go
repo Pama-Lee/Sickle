@@ -49,30 +49,31 @@ func checkDatabaseConfig(config *entity.Config) error {
 	DatabaseConfig := config.Database
 	// 检查其中的字段是否为空
 	if DatabaseConfig.Type == "" {
-		return errors.New("the databaseEntity type is empty")
+		return errors.New("the database type is empty")
 	}
 	switch DatabaseConfig.Type {
 	case "mysql":
 		if DatabaseConfig.Type == "mysql" {
+			log.Info("You selected mysql driver, you need to configure the database information in the config.json file")
 			// 检查数据库地址是否为空
 			if DatabaseConfig.Host == "" {
-				return errors.New("the databaseEntity host is empty")
+				return errors.New("the database host is empty")
 			}
 			// 检查数据库端口是否为空
 			if DatabaseConfig.Port == 0 {
-				return errors.New("the databaseEntity port is empty")
+				return errors.New("the database port is empty")
 			}
 			// 检查数据库用户名是否为空
 			if DatabaseConfig.User == "" {
-				return errors.New("the databaseEntity user is empty")
+				return errors.New("the database user is empty")
 			}
 			// 检查数据库密码是否为空
 			if DatabaseConfig.Password == "" {
-				return errors.New("the databaseEntity password is empty")
+				return errors.New("the database password is empty")
 			}
 			// 检查数据库名称是否为空
 			if DatabaseConfig.Database == "" {
-				return errors.New("the databaseEntity name is empty")
+				return errors.New("the database name is empty")
 			}
 			return nil
 		}
@@ -95,6 +96,10 @@ func GetDatabaseSession() *gorm.DB {
 
 // CloseDatabase 关闭数据库
 func CloseDatabase() error {
+	// 检测数据库是否已经初始化
+	if Database == nil {
+		return errors.New("the database is not initialized")
+	}
 	// 关闭数据库
 	db, err := Database.DB()
 	if err != nil {

@@ -21,6 +21,8 @@
 go.work
 /.idea
 
+/webhooks
+
 # 配置文件
 ./config
 config.json
