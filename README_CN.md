@@ -107,8 +107,6 @@ UUID是类似这样的字符串:`784db24b-e9fb-4e4f-8b7d-fac84500a9af`
 你可以在`./webhooks/{project}.json`中配置你的webhooks来源和目标平台，例如：
 
 ```json
-{
-  "webhooks": [
     {
       "name": "Webhook 1",
       "url": "",
@@ -161,8 +159,6 @@ UUID是类似这样的字符串:`784db24b-e9fb-4e4f-8b7d-fac84500a9af`
         }
       ]
     }
-  ]
-}
 
 ```
 
