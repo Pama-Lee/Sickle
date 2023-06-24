@@ -117,8 +117,6 @@ of `webhooks` to `https://maker.ifttt.com/trigger/{event}/ with/key/{key}`
 You can configure your webhooks source and target platform in `./webhooks/{project}.json`, for example:
 
 ```json
-{
-  "webhooks": [
     {
       "name": "Webhook 1",
       "url": "",
@@ -174,8 +172,6 @@ You can configure your webhooks source and target platform in `./webhooks/{proje
         }
       ]
     }
-  ]
-}
 
 ```
 
