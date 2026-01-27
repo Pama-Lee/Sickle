@@ -16,13 +16,6 @@ job "sickle" {
       }
     }
 
-    # 数据持久化
-    volume "sickle-data" {
-      type      = "host"
-      source    = "sickle-data"
-      read_only = false
-    }
-
     task "sickle" {
       driver = "docker"
 
@@ -30,18 +23,13 @@ job "sickle" {
         image = "pamalee2023/sickle:latest"
         ports = ["http"]
 
-        # 挂载配置和数据目录
+        # 直接映射配置目录
         volumes = [
           "local/config:/app/config",
           "local/webhooks:/app/webhooks",
+          "local/logs:/app/logs",
+          "local/request:/app/request",
         ]
-      }
-
-      # 挂载持久化卷
-      volume_mount {
-        volume      = "sickle-data"
-        destination = "/app/logs"
-        read_only   = false
       }
 
       # 环境变量
@@ -82,11 +70,11 @@ EOF
         change_mode = "restart"
       }
 
-      # Webhook 配置模板（示例）
+      # GitHub -> 企业微信 Webhook 配置
       template {
         data = <<EOF
 {
-    "name": "Example Webhook",
+    "name": "GitHub to WeChat Work",
     "url": "",
     "uuid": "",
     "source": {
@@ -96,17 +84,32 @@ EOF
                 {
                     "name": "push",
                     "key": "sickle.headers.X-GitHub-Event",
-                    "destinations": ["notification"]
+                    "destinations": ["wechat"]
+                },
+                {
+                    "name": "pull_request",
+                    "key": "sickle.headers.X-GitHub-Event",
+                    "destinations": ["wechat"]
+                },
+                {
+                    "name": "issues",
+                    "key": "sickle.headers.X-GitHub-Event",
+                    "destinations": ["wechat"]
+                },
+                {
+                    "name": "star",
+                    "key": "sickle.headers.X-GitHub-Event",
+                    "destinations": ["wechat"]
                 }
             ]
         }
     },
     "destinations": [
         {
-            "name": "notification",
-            "type": "webhook",
+            "name": "wechat",
+            "type": "wechat_work",
             "config": {
-                "webhook_url": "https://your-webhook-url.com",
+                "webhook_url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=fa29effe-773e-4f8f-918d-7f4663d6b480",
                 "method": "POST",
                 "headers": {
                     "Content-Type": "application/json"
@@ -115,7 +118,37 @@ EOF
                     {
                         "event": "push",
                         "data": {
-                            "text": "New push from ${repository.full_name}: ${head_commit.message}"
+                            "msgtype": "markdown",
+                            "markdown": {
+                                "content": "## 🚀 代码推送\n> 仓库: **${repository.full_name}**\n> 分支: `${ref}`\n> 提交者: ${pusher.name}\n> 提交信息: ${head_commit.message}\n> [查看详情](${head_commit.url})"
+                            }
+                        }
+                    },
+                    {
+                        "event": "pull_request",
+                        "data": {
+                            "msgtype": "markdown",
+                            "markdown": {
+                                "content": "## 🔀 Pull Request ${action}\n> 仓库: **${repository.full_name}**\n> 标题: ${pull_request.title}\n> 提交者: ${pull_request.user.login}\n> [查看详情](${pull_request.html_url})"
+                            }
+                        }
+                    },
+                    {
+                        "event": "issues",
+                        "data": {
+                            "msgtype": "markdown",
+                            "markdown": {
+                                "content": "## 📝 Issue ${action}\n> 仓库: **${repository.full_name}**\n> 标题: ${issue.title}\n> 提交者: ${issue.user.login}\n> [查看详情](${issue.html_url})"
+                            }
+                        }
+                    },
+                    {
+                        "event": "star",
+                        "data": {
+                            "msgtype": "markdown",
+                            "markdown": {
+                                "content": "## ⭐ Star ${action}\n> 仓库: **${repository.full_name}**\n> 用户: ${sender.login}\n> 当前 Stars: ${repository.stargazers_count}"
+                            }
                         }
                     }
                 ]
@@ -125,7 +158,7 @@ EOF
 }
 EOF
 
-        destination = "local/webhooks/example.json"
+        destination = "local/webhooks/github-wechat.json"
         change_mode = "restart"
       }
 
