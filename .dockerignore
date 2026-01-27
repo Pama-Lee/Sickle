@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# 编译产物
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# 测试文件
+*_test.go
+test/
+
+# 文档和图片
+*.md
+image/
+LICENSE
+
+# 运行时生成的文件
+logs/
+request/
+*.log
+
+# Docker 相关
+Dockerfile
+docker-compose.yml
+.dockerignore

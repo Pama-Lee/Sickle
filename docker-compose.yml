@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  sickle:
+    build: .
+    image: sickle:latest
+    container_name: sickle
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./webhooks:/app/webhooks      # Webhook 配置文件
+      - ./logs:/app/logs              # 日志文件
+      - ./config:/app/config          # 配置文件
+      - ./request:/app/request        # 请求数据
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      - sickle-network
+
+  # 可选：如果需要 MySQL 数据库
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: sickle-mysql
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: your_root_password
+  #     MYSQL_DATABASE: sickle
+  #     MYSQL_USER: sickle
+  #     MYSQL_PASSWORD: your_password
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - sickle-network
+
+networks:
+  sickle-network:
+    driver: bridge
+
+# volumes:
+#   mysql_data:
