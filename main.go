@@ -8,7 +8,11 @@ import (
 	"Sickle/store"
 	"fmt"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
+
+	"golang.org/x/term"
 )
 
 /**
@@ -50,8 +54,16 @@ func main() {
 
 	// 开启单独的线程处理http
 	go server.Start(Config)
-	// 开启单独的线程开启控制台
-	console()
+
+	// 检查是否在终端中运行（有 tty）
+	if term.IsTerminal(int(os.Stdin.Fd())) {
+		// 有终端，开启控制台
+		console()
+	} else {
+		// 没有终端（Docker/后台运行），等待信号
+		log.Info("Running in non-interactive mode, use signals to control")
+		waitForSignal()
+	}
 
 }
 
@@ -124,4 +136,22 @@ func Exit(code int) {
 	log.Info("Sickle is exiting...")
 	// 退出程序
 	os.Exit(code)
+}
+
+// waitForSignal 等待系统信号（用于 Docker/后台运行模式）
+func waitForSignal() {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
+
+	for {
+		sig := <-sigChan
+		switch sig {
+		case syscall.SIGINT, syscall.SIGTERM:
+			log.Info("Received shutdown signal")
+			Stop()
+		case syscall.SIGHUP:
+			log.Info("Received reload signal")
+			Reload()
+		}
+	}
 }

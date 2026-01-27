@@ -1,5 +1,5 @@
 # 构建阶段 - 使用 Debian 基础镜像避免 musl libc 兼容性问题
-FROM golang:1.21-bookworm AS builder
+FROM golang:1.24-bookworm AS builder
 
 # 安装必要的构建工具
 RUN apt-get update && apt-get install -y --no-install-recommends \

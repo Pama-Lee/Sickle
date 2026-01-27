@@ -1,6 +1,8 @@
 module Sickle
 
-go 1.17
+go 1.24.0
+
+toolchain go1.24.10
 
 require (
 	github.com/fatih/color v1.15.0
@@ -9,6 +11,8 @@ require (
 	gorm.io/driver/sqlite v1.5.2
 	gorm.io/gorm v1.25.2-0.20230530020048-26663ab9bf55
 )
+
+require golang.org/x/term v0.39.0
 
 require (
 	github.com/bytedance/sonic v1.9.1 // indirect
@@ -37,7 +41,7 @@ require (
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
