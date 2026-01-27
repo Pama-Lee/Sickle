@@ -20,7 +20,7 @@ job "sickle" {
       driver = "docker"
 
       config {
-        image = "pamalee2023/sickle:latest"
+        image = "ghcr.io/pama-lee/sickle:latest"
         ports = ["http"]
 
         # 直接映射配置目录
