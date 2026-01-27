@@ -83,22 +83,22 @@ EOF
             "events": [
                 {
                     "name": "push",
-                    "key": "sickle.headers.X-GitHub-Event",
+                    "key": "sickle.headers.X-Github-Event",
                     "destinations": ["wechat"]
                 },
                 {
                     "name": "pull_request",
-                    "key": "sickle.headers.X-GitHub-Event",
+                    "key": "sickle.headers.X-Github-Event",
                     "destinations": ["wechat"]
                 },
                 {
                     "name": "issues",
-                    "key": "sickle.headers.X-GitHub-Event",
+                    "key": "sickle.headers.X-Github-Event",
                     "destinations": ["wechat"]
                 },
                 {
                     "name": "star",
-                    "key": "sickle.headers.X-GitHub-Event",
+                    "key": "sickle.headers.X-Github-Event",
                     "destinations": ["wechat"]
                 }
             ]
